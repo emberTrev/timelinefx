@@ -10,9 +10,9 @@
 
 namespace TLFX
 {
-
     const int   ParticleManager::particleLimit = 5000;
 	float       ParticleManager::_globalAmountScale = 1.0f;
+	bool        ParticleManager::createParticlesAsNeeded = true;
 
     ParticleManager::ParticleManager(int particles /*= particleLimit*/, int layers /*= 1*/)
         : _originX(0)
@@ -142,11 +142,19 @@ namespace TLFX
 
     Particle* ParticleManager::GrabParticle( Effect *effect, bool pool, int layer /*= 0*/ )
     {
+		Particle *p = NULL;
         if (!_unused.empty())
         {
-            Particle *p = _unused.top();
+            p = _unused.top();
             _unused.pop();
+		}
+		else if(createParticlesAsNeeded)
+		{
+			p = new Particle();
+		}
 
+		if(p)
+		{
             p->SetLayer(layer);
             p->SetGroupParticles(pool);
 
