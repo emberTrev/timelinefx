@@ -1508,11 +1508,10 @@ namespace TLFX
             } // for
             _counter -= intCounter;
         }
-    }
+    } // Emitter::UpdateSpawns()
 
     void Emitter::ControlParticle( Particle *e )
     {
-        ParticleManager* pm = _parentEffect->GetParticleManager();
 
         // alpha change
         if (_alphaRepeat > 1)
@@ -1539,7 +1538,7 @@ namespace TLFX
             }
             else
             {
-                if (!_bypassWeight && !_parentEffect->IsBypassWeight() || e->_direction)
+                if (!_bypassWeight && (!_parentEffect->IsBypassWeight() || e->_direction))
                 {
                     if (e->_oldWX != e->_wx && e->_oldWY != e->_wy)
                     {
@@ -1608,8 +1607,13 @@ namespace TLFX
                             e->_oldWY = e->_wy;
                         }
                         break;
+					case Effect::EndLetFree:
+						break;
                     }
                 }
+				break;
+			default:
+				break;
             }
         }
         else
