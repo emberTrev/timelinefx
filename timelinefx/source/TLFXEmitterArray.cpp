@@ -37,8 +37,8 @@ namespace TLFX
 
     void EmitterArray::SetCompiled( unsigned int frame, float value )
     {
-        assert(frame >= 0 && frame < _changes.size());
-        if (frame >= 0 && frame < _changes.size())
+        assert(frame < _changes.size());
+        if (frame < _changes.size())
             _changes[frame] = value;
     }
 
