@@ -32,7 +32,7 @@ namespace TLFX
 
         unsigned int   GetAttributesCount() const;
 
-        float           GetMaxValue() const;
+        float          GetMaxValue() const;
 
         // compiled
         void           Compile();

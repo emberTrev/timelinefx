@@ -71,13 +71,6 @@ namespace TLFX
             const AttributeNode* lastec = &_attributes.back();
             float lookupFrequency = EffectsLibrary::GetLookupFrequency();
             int frame = (int)ceilf(lastec->frame / lookupFrequency);
-            /*
-            while (age < lastec->frame)
-            {
-                ++frame;
-                age += lookupFrequency;
-            }
-            */
             _changes.resize(frame+1);
             frame = 0;
             float age = 0;
@@ -87,7 +80,7 @@ namespace TLFX
                 ++frame;
                 age = frame * lookupFrequency;
             }
-            SetCompiled(frame, lastec->value);
+			SetCompiled(_changes.size() - 1, lastec->value);
         }
         else
         {
@@ -103,13 +96,6 @@ namespace TLFX
             const AttributeNode* lastec = &_attributes.back();
             float lookupFrequency = EffectsLibrary::GetLookupFrequencyOverTime();
             int frame = (int)ceilf(longestLife / lookupFrequency);
-            /*
-            while (age < longestLife)
-            {
-                ++frame;
-                age += lookupFrequency;
-            }
-            */
             _changes.resize(frame+1);
             frame = 0;
             float age = 0;
@@ -119,7 +105,7 @@ namespace TLFX
                 ++frame;
                 age = frame * lookupFrequency;
             }
-            SetCompiled(frame, lastec->value);
+            SetCompiled(_changes.size() - 1, lastec->value);
             SetLife((int)longestLife);
         }
         else
