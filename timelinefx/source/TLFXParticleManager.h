@@ -333,8 +333,11 @@ namespace TLFX
         float                                _currentTime;
         int                                  _currentTick;
         int                                  _idleTimeLimit;         // The time in game ticks before idle effects are automatically deleted
-
-        int                                  _renderCount;
+		
+#ifdef _DEBUG
+		int                                  _renderCount;
+		int                                  _createdCount;
+#endif
         float                                _currentTween;
 
         int                                  _effectLayers;

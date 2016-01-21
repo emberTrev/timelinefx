@@ -56,11 +56,14 @@ namespace TLFX
         , _currentTick(0)
         , _idleTimeLimit(100)
 
-        , _renderCount(0)
         , _currentTween(0)
 
         , _effectLayers(0)
         , _inUseCount(0)
+#ifdef _DEBUG
+        , _renderCount(0)
+		, _createdCount(0)
+#endif
     {
         _inUse.resize(layers);
         _effects.resize(layers);
@@ -168,6 +171,9 @@ namespace TLFX
 			}
 
             ++_inUseCount;
+			#ifdef _DEBUG
+				++_createdCount;
+			#endif
 
             return p;
         }
@@ -205,7 +211,9 @@ namespace TLFX
         int cBlue = GetB();
         */
 
-        // rendercount = 0
+		#ifdef _DEBUG
+			_renderCount = 0;
+		#endif
         if (_angle != 0)
         {
             _angleTweened = TweenValues(_oldAngle, _angle, tween);
@@ -656,7 +664,9 @@ namespace TLFX
                     }
 					
                     DrawSprite(sprite, _px, _py, _tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend == Emitter::BMLightBlend);
-                    // ++rendercount
+					#ifdef _DEBUG
+						++_renderCount;
+					#endif
                 }
             }
         }
