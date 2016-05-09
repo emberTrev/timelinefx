@@ -866,6 +866,7 @@ namespace TLFX
         const std::list<Effect*>& GetEffects() const;
 
         bool IsDying() const;
+		bool IsDoneSpawning();
 
     protected:
         float                                   _currentLife;           /// the current life of the emitter as it will vary over time
@@ -938,6 +939,9 @@ namespace TLFX
         EmitterArray*                           _cStretch;              /// amount the particle is stretched by the speed it's traveling
         EmitterArray*                           _cSplatter;             /// this will randomize the distance where the particle spawns to it's point.
         bool                                    _arrayOwner;            /// only the effects/emitters in EffectsLibrary should be the owners, not the copies
+		
+		bool                                    _finishedSpawning;
+		bool                                    _destroyedAllParticles;
 
         // Bypassers
         bool                                    _bypassWeight;

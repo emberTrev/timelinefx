@@ -293,5 +293,16 @@ namespace TLFX
         }
         return max;
     }
+	
+	bool EmitterArray::IsDone( float frame ) const
+	{
+		const AttributeNode &node = _attributes.back();
+		if(frame >= node.frame)
+		{
+			if(std::abs(node.value) <= TACO_ZERO_EPSILON)
+				return true;
+		}
+		return false;
+	}
 
 } // namespace TLFX

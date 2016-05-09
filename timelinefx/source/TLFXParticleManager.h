@@ -67,6 +67,7 @@ namespace TLFX
     {
     public:
         static const int   particleLimit;
+		static const int   idleTimeLimit;
 		
 		// true: create particles whenever there aren't enough in _unused
 		// false: when _unused is empty, stop creating particles
@@ -297,6 +298,15 @@ namespace TLFX
         float GetCurrentTime() const;
 
         bool IsSpawningAllowed() const;
+		bool IsDoneSpawning();
+		
+		// event function to be inherited and used to watch the progress of effects
+		// essentially overload these with callbacks
+		virtual void didAddEffect(Effect *effect) {}
+		virtual void didDoFirstSpawn(Effect *effect) {}
+		virtual void didLoop(Effect *effect) {}
+		virtual void didFinishSpawning() {}
+		virtual void didDestroyAllParticles() {}
 
     protected:
         std::vector<std::vector<ParticleList> > _inUse;
@@ -341,6 +351,9 @@ namespace TLFX
         float                                _currentTween;
 
         int                                  _effectLayers;
+		
+		bool                                 _finishedSpawning;
+		bool                                 _destroyedAllParticles;
 
         // internal methods
         void DrawEffects();

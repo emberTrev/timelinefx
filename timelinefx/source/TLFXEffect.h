@@ -861,6 +861,7 @@ namespace TLFX
         const ParticleList& GetParticles(int layer) const;
 
         bool IsDying() const;
+		bool IsDoneSpawning();
 
     protected:
         std::map<std::string, Effect*> _directoryEffects;       /// The directory of all the effect's sub effects and emitters.
@@ -910,6 +911,9 @@ namespace TLFX
         int                            _seed;                   /// the number used for the random number generator
         float                          _zoom;                   /// level of zoom of the animation
         int                            _frameOffset;            /// Starting frame offset
+		
+		bool                           _finishedSpawning;
+		bool                           _destroyedAllParticles;
 
         // ----Global Settings, Graph attributes----
         EmitterArray*                  _cLife;

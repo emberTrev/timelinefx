@@ -54,6 +54,9 @@ namespace TLFX
         , _seed(0)
         , _zoom(1.0f)
         , _frameOffset(0)
+	
+		,_finishedSpawning(false)
+		,_destroyedAllParticles(false)
 
         , _currentLife(0)
         , _currentAmount(0)
@@ -153,6 +156,9 @@ namespace TLFX
         , _seed(o._seed)
         , _zoom(o._zoom)
         , _frameOffset(o._frameOffset)
+		
+		,_finishedSpawning(false)
+		,_destroyedAllParticles(false)
 
         , _currentLife(o._currentLife)
         , _currentAmount(o._currentAmount)
@@ -924,6 +930,7 @@ namespace TLFX
         {
             _dob = _particleManager->GetCurrentTime();
             _age = 0;
+			_particleManager->didLoop(this);
         }
 
         _currentEffectFrame = _age / EffectsLibrary::GetLookupFrequency();
@@ -1309,6 +1316,27 @@ namespace TLFX
     {
         return _dying;
     }
+	
+	bool Effect::IsDoneSpawning()
+	{
+		if(_finishedSpawning)
+			return true;
+		if(_cAmount->IsDone(_age))
+		{
+			_finishedSpawning = true;
+			return true;
+		}
+		if(_children.size() == 0)
+			return false;
+		for(auto it = _children.begin(); it != _children.end(); ++it)
+		{
+			Emitter *emitter = dynamic_cast<Emitter*>(*it);
+			if(emitter && !emitter->IsDoneSpawning())
+				return false;
+		}
+		_finishedSpawning = true;
+		return true;
+	}
 
     ParticleManager* Effect::GetParticleManager() const
     {

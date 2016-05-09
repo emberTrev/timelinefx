@@ -85,6 +85,9 @@ namespace TLFX
         , _currentFramerate(0)
 
         , _arrayOwner(true)
+	
+		,_finishedSpawning(false)
+		,_destroyedAllParticles(false)
     {
         _childrenOwner = false;         // the Particles are managing by pool
 
@@ -234,6 +237,8 @@ namespace TLFX
 
         // copy automatically: base/entity
         // not copy: 
+		,_finishedSpawning(false)
+		,_destroyedAllParticles(false)
     {
         _dob = pm->GetCurrentTime();
         SetOKtoRender(false);
@@ -504,6 +509,8 @@ namespace TLFX
     void Emitter::AddEffect( Effect* effect )
     {
         _effects.push_back(effect);
+		_finishedSpawning = false;
+		//_parentEffect->GetParticleManager()->didAddEffect(effect); // maybe?
     }
 
     void Emitter::SetParentEffect( Effect *parent )
@@ -929,6 +936,10 @@ namespace TLFX
             // ------------------------------
             for (int c = 1; c <= intCounter; ++c)
             {
+				if(!_startedSpawning)
+				{
+					_parentEffect->GetParticleManager()->didDoFirstSpawn(_parentEffect);
+				}
                 _startedSpawning = true;
                 assert(pm);
                 if (!eSingle)
@@ -2117,6 +2128,29 @@ namespace TLFX
     {
         return _dying;
     }
+	
+	bool Emitter::IsDoneSpawning()
+	{
+		if(_finishedSpawning)
+			return true;
+		if(_oneShot || (_cAmount->IsDone(_currentFrame) && _cAmountVariation->IsDone(_currentFrame)))
+		{
+			if(_children.size() == 0)
+				return false;
+			for(auto particle = _children.begin(); particle != _children.end(); ++particle)
+			{
+				for(auto it = (*particle)->GetChildren().begin(); it != (*particle)->GetChildren().end(); ++it)
+				{
+					Effect *effect = dynamic_cast<Effect*>(*it);
+					if(effect && !effect->IsDoneSpawning())
+						return false;
+				}
+			}
+			_finishedSpawning = true;
+			return true;
+		}
+		return false;
+	}
 
     void Emitter::SetPath( const char *path )
     {

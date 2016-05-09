@@ -11,6 +11,7 @@
 namespace TLFX
 {
     const int   ParticleManager::particleLimit = 5000;
+	const int   ParticleManager::idleTimeLimit = 100;
 	float       ParticleManager::_globalAmountScale = 1.0f;
 	bool        ParticleManager::createParticlesAsNeeded = true;
 
@@ -54,7 +55,7 @@ namespace TLFX
 
         , _currentTime(0)
         , _currentTick(0)
-        , _idleTimeLimit(100)
+        , _idleTimeLimit(ParticleManager::idleTimeLimit)
 
         , _currentTween(0)
 
@@ -64,6 +65,8 @@ namespace TLFX
         , _renderCount(0)
 		, _createdCount(0)
 #endif
+		,_finishedSpawning(false)
+		,_destroyedAllParticles(false)
     {
         _inUse.resize(layers);
         _effects.resize(layers);
@@ -140,6 +143,17 @@ namespace TLFX
             _oldOriginX = _originX;
             _oldOriginY = _originY;
             _oldOriginZ = _originZ;
+			
+			if(IsDoneSpawning())
+			{
+				didFinishSpawning();
+				_finishedSpawning = true;
+				if(GetParticlesInUse() == 0)
+				{
+					didDestroyAllParticles();
+					_destroyedAllParticles = true;
+				}
+			}
         }
     }
 
@@ -418,7 +432,9 @@ namespace TLFX
         }
         _currentTime = tempTime;
         e->SetEffectLayer(layer);
-        _effects[layer].insert(e);
+		_effects[layer].insert(e);
+		didAddEffect(e);
+		_finishedSpawning = false;
     }
 
     void ParticleManager::AddEffect( Effect* e, int layer /*= 0*/ )
@@ -427,6 +443,8 @@ namespace TLFX
             layer = 0;
         e->SetEffectLayer(layer);
         _effects[layer].insert(e);
+		didAddEffect(e);
+		_finishedSpawning = false;
     }
 
     void ParticleManager::RemoveEffect( Effect* e )
@@ -681,6 +699,25 @@ namespace TLFX
     {
         return _spawningAllowed;
     }
+	
+	bool ParticleManager::IsDoneSpawning()
+	{
+		if(_finishedSpawning)
+			return true;
+		if(GetGlobalAmountScale() * GetLocalAmountScale() == 0)
+			return true;
+		if(GetEffectCount() == 0)
+			return false;
+		for(int el = 0; el < _effectLayers; ++el)
+		{
+			for(auto it =_effects[el].begin(); it != _effects[el].end(); ++it)
+			{
+				if(!(*it)->IsDoneSpawning())
+					return false;
+			}
+		}
+		return true;
+	}
 
     float ParticleManager::GetCurrentTime() const
     {
