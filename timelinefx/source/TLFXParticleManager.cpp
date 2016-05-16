@@ -719,6 +719,28 @@ namespace TLFX
 		return true;
 	}
 
+	void ParticleManager::SoftKill()
+	{
+		for(int el = 0; el < _effectLayers; ++el)
+		{
+			for(auto it =_effects[el].begin(); it != _effects[el].end(); ++it)
+			{
+				(*it)->SoftKill();
+			}
+		}
+	}
+	
+	void ParticleManager::HardKill()
+	{
+		for(int el = 0; el < _effectLayers; ++el)
+		{
+			for(auto it =_effects[el].begin(); it != _effects[el].end(); ++it)
+			{
+				(*it)->HardKill();
+			}
+		}
+	}
+	
     float ParticleManager::GetCurrentTime() const
     {
         return _currentTick * EffectsLibrary::GetUpdateTime();

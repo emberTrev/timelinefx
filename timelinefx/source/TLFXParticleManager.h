@@ -300,6 +300,20 @@ namespace TLFX
         bool IsSpawningAllowed() const;
 		bool IsDoneSpawning();
 		
+		
+		/**
+		 * Softly kill all effects
+		 * Call this to kill all effects by stopping them from spawning any more particles. This will make the effects slowly die about as any remaining
+		 * particles cease to exist. Any single particles are converted to one shot particles.
+		 */
+		void SoftKill();
+		
+		/**
+		 * Hard kill all effects
+		 * Immediately kills all effects by destroying all particles created by them.
+		 */
+		void HardKill();
+		
 		// event function to be inherited and used to watch the progress of effects
 		// essentially overload these with callbacks
 		virtual void didAddEffect(Effect *effect) {}
