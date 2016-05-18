@@ -932,14 +932,15 @@ namespace TLFX
             _currentSizeY = GetEmitterSizeY(curFrame);
             _currentSizeXVariation = GetEmitterSizeXVariation(curFrame);
             _currentSizeYVariation = GetEmitterSizeYVariation(curFrame);
+			
+			if(intCounter >= 1 && !_startedSpawning)
+			{
+				_parentEffect->GetParticleManager()->didDoFirstSpawn(_parentEffect);
+			}
 
             // ------------------------------
             for (int c = 1; c <= intCounter; ++c)
             {
-				if(!_startedSpawning)
-				{
-					_parentEffect->GetParticleManager()->didDoFirstSpawn(_parentEffect);
-				}
                 _startedSpawning = true;
                 assert(pm);
                 if (!eSingle)
